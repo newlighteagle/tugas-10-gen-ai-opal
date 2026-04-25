@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asisten Pembuat Kuis - Logika Komputer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                        },
+                        accent: {
+                            50: '#f0fdfa',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                        },
+                        neutral: {
+                            900: '#1a1a1a',
+                            800: '#333333',
+                            100: '#f9f9f9',
+                            200: '#ececec',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        premium: '0 10px 30px -10px rgba(0, 0, 0, 0.08)',
+                        hover: '0 20px 40px -15px rgba(0, 0, 0, 0.12)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #f9fafb;
+            scroll-behavior: smooth;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        .copy-success {
+            animation: fadeInOut 2s ease-in-out;
+        }
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateY(10px); }
+            15% { opacity: 1; transform: translateY(0); }
+            85% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-10px); }
+        }
+        .sidebar-item-active {
+            border-left: 4px solid #3b82f6;
+            background-color: #eff6ff;
+        }
+    </style>
+</head>
+<body class="font-sans text-neutral-800 leading-relaxed">
+
+    <!-- Header -->
+    <header class="sticky top-0 z-50 w-full glass-card border-b border-gray-200">
+        <div class="max-w-4xl mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+            <h1 class="font-display text-2xl md:text-3xl font-bold tracking-tight text-brand-700">
+                Asisten Pembuat Kuis
+            </h1>
+            <div class="flex items-center gap-2">
+                <button onclick="window.print()" class="px-4 py-2 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-50 transition-all text-sm font-medium flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                    </svg>
+                    Cetak Halaman
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-6 py-12">
+        
+        <!-- Welcome Section -->
+        <section class="mb-16">
+            <div class="bg-brand-600 rounded-3xl p-8 md:p-12 text-white shadow-premium relative overflow-hidden">
+                <div class="relative z-10">
+                    <h2 class="font-display text-3xl md:text-4xl font-extrabold mb-4">Daftar Pertanyaan Kuis</h2>
+                    <p class="text-brand-100 text-lg max-w-2xl leading-relaxed">
+                        Bank soal profesional mengenai Logika Komputer Dasar. Siap digunakan untuk ujian, tugas, atau latihan interaktif di kelas.
+                    </p>
+                </div>
+                <!-- Decorative element -->
+                <div class="absolute -right-20 -bottom-20 w-80 h-80 bg-brand-500 rounded-full opacity-50"></div>
+                <div class="absolute right-10 top-10 w-20 h-20 bg-brand-400 rounded-full opacity-30 blur-xl"></div>
+            </div>
+        </section>
+
+        <!-- Question Cards Grid -->
+        <div class="space-y-8" id="quiz-container">
+            
+            <!-- Question 1 -->
+            <article class="bg-white rounded-2xl p-6 md:p-8 shadow-premium border border-gray-100 transition-all hover:shadow-hover group" id="q1">
+                <div class="flex justify-between items-start mb-6">
+                    <span class="inline-flex items-center justify-center px-3 py-1 rounded-full bg-brand-50 text-brand-600 text-xs font-bold uppercase tracking-wider">Pertanyaan 1</span>
+                    <button onclick="copyQuestion('q1')" class="text-gray-400 hover:text-brand-500 transition-colors p-2 rounded-lg hover:bg-gray-50" title="Salin Pertanyaan">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                        </svg>
+                    </button>
+                </div>
+                <h3 class="font-display text-xl md:text-2xl font-bold text-neutral-900 mb-6 leading-tight">
+                    Unit terkecil dari data pada sistem biner yang hanya terdiri dari angka 0 dan 1 disebut dengan...
+                </h3>
+                <ul class="space-y-3 mb-8">
+                    <li class="flex items-center gap-4 p-4 rounded-xl border border-gray-100 hover:bg-gray-50 transition-colors">
+                        <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 text-sm font-bold">A</span>
+                        <span>Byte</span>
+                    </li>
+                    <li class="flex items-center gap-4 p-4 rounded-xl border border-brand-200 bg-brand-50/30 transition-colors">
+                        <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-brand-500 text-white text-sm font-bold">B</span>
+                        <span class="font-medium text-brand-700">Bit</span>
+                    </li>
+                    <li class="flex items-center gap-4 p-4 rounded-xl border border-gray-100 hover:bg-gray-50 transition-colors">
+                        <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 text-sm font-bold">C</span>
+                        <span>Megabyte</span>
+                    </li>
+                    <li class="flex items-center gap-4 p-4 rounded-xl border border-gray-100 hover:bg-gray-50 transition-colors">
+                        <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 text-sm font-bold">D</span>
+                        <span>Sirkuit</span>
+                    </li>
+                </ul>
+                <div class="p-6 bg-accent-50 rounded-2xl border border-accent-100">
+                    <div class="mb-2"><strong class="text-accent-600">Kunci Jawaban:</strong> <span class="font-bold text-neutral-900">B</span></div>
+                    <p class="text-sm text-neutral-800 leading-relaxed"><strong class="text-accent-600">Penjelasan:</strong> Bit atau Binary Digit adalah unit terkecil dari data dalam logika komputer yang merepresentasikan kondisi 0 atau 1.</p>
+                </div>
+            </article>
+
+            <!-- Question 2 -->
+            <article class="bg-white rounded-2xl p-6 md:p-8 shadow-premium border border-gray-100 transition-all hover:shadow-hover group" id="q2">
+                <div class="flex justify-between items-start mb-6">
+                    <span class="inline-flex items-center justify-center px-3 py-1 rounded-full bg-brand-50 text-brand-600 text-xs font-bold uppercase tracking-wider">Pertanyaan 2</span>
+                    <button onclick="copyQuestion('q2')" class="text-gray-400 hover:text-brand-500 transition-colors p-2 rounded-lg hover:bg-gray-50">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                        </svg>
+                    </button>
+                </div>
+                <h3 class="font-display text-xl md:text-2xl font-bold text-neutral-900 mb-6">Gerbang logika yang berfungsi untuk membalikkan nilai input (inverter) adalah...</h3>
+                <ul class="space-y-3 mb-8">
+                    <li class="flex items-center gap-4 p-4 rounded-xl border border-gray-100">
+                        <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 text-sm font-bold">A</span>
+                        <span>Gerbang AND</span>
+                    </li>
+                    <li class="flex items-center gap-4 p-4 rounded-xl border border-gray-100">
+                        <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 text-sm font-bold">B</span>
+                        <span>Gerbang OR</span>
+                    </li>
+                    <li class="flex items-center gap-4 p-4 rounded-xl border border-brand-200 bg-brand-50/30">
+                        <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-brand-500 text-white text-sm font-bold">C</span>
+                        <span class="font-medium text-brand-700">Gerbang NOT</span>
+                    </li>
+                    <li class="flex items-center gap-4 p-4 rounded-xl border border-gray-100">
+                        <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 text-sm font-bold">D</span>
+                        <span>Gerbang XOR</span>
+                    </li>
+                </ul>
+                <div class="p-6 bg-accent-50 rounded-2xl border border-accent-100">
+                    <div class="mb-2"><strong class="text-accent-600">Kunci Jawaban:</strong> <span class="font-bold text-neutral-900">C</span></div>
+                    <p class="text-sm text-neutral-800 leading-relaxed"><strong class="text-accent-600">Penjelasan:</strong> Gerbang NOT membalikkan nilai input; jika input 1 maka output 0, dan jika input 0 maka output 1.</p>
+                </div>
+            </article>
+
+            <!-- Question 3 -->
+            <article class="bg-white rounded-2xl p-6 md:p-8 shadow-premium border border-gray-100 transition-all hover:shadow-hover" id="q3">
+                <div class="flex justify-between items-start mb-6">
+                    <span class="inline-flex items-center justify-center px-3 py-1 rounded-full bg-brand-50 text-brand-600 text-xs font-bold uppercase tracking-wider">Pertanyaan 3</span>
+                    <button onclick="copyQuestion('q3')" class="text-gray-400 hover:text-brand-500 transition-colors p-2 rounded-lg hover:bg-gray-50">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                        </svg>
+                    </button>
+                </div>
+                <h3 class="font-display text-xl md:text-2xl font-bold text-neutral-900 mb-6">Dalam gerbang logika AND, output akan bernilai 1 hanya jika...</h3>
+                <ul class="space-y-3 mb-8">
+                    <li class="flex items-center gap-4 p-4 rounded-xl border border-gray-100">
+                        <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 text-sm font-bold">A</span>
+                        <span>Salah satu input bernilai 1</span>
+                    </li>
+                    <li class="flex items-center gap-4 p-4 rounded-xl border border-gray-100">
+                        <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 text-sm font-bold">B</span>
+                        <span>Semua input bernilai 0</span>
+                    </li>
+                    <li class="flex items-center gap-4 p-4 rounded-xl border border-brand-200 bg-brand-50/30">
+                        <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-brand-500 text-white text-sm font-bold">C</span>
+                        <span class="font-medium text-brand-700">Semua input bernilai 1</span>
+                    </li>
+                    <li class="flex items-center gap-4 p-4 rounded-xl border border-gray-100">
+                        <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 text-sm font-bold">D</span>
+                        <span>Salah satu input bernilai 0</span>
+                    </li>
+                </ul>
+                <div class="p-6 bg-accent-50 rounded-2xl border border-accent-100">
+                    <div class="mb-2"><strong class="text-accent-600">Kunci Jawaban:</strong> <span class="font-bold text-neutral-900">C</span></div>
+                    <p class="text-sm text-neutral-800 leading-relaxed"><strong class="text-accent-600">Penjelasan:</strong> Aturan gerbang AND menyatakan bahwa output hanya akan benar (1) jika seluruh input yang masuk bernilai benar (1).</p>
+                </div>
+            </article>
+
+            <!-- Question 4 -->
+            <article class="bg-white rounded-2xl p-6 md:p-8 shadow-premium border border-gray-100 transition-all hover:shadow-hover" id="q4">
+                <div class="flex justify-between items-start mb-6">
+                    <span class="inline-flex items-center justify-center px-3 py-1 rounded-full bg-brand-50 text-brand-600 text-xs font-bold uppercase tracking-wider">Pertanyaan 4</span>
+                    <button onclick="copyQuestion('q4')" class="text-gray-400 hover:text-brand-500 transition-colors p-2 rounded-lg hover:bg-gray-50">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                        </svg>
+                    </button>
+                </div>
+                <h3 class="font-display text-xl md:text-2xl font-bold text-neutral-900 mb-6">Berdasarkan tabel kebenaran, gerbang logika yang akan menghasilkan output 0 jika kedua inputnya sama (0-0 atau 1-1) adalah...</h3>
+                <ul class="space-y-3 mb-8">
+                    <li class="flex items-center gap-4 p-4 rounded-xl border border-gray-100">
+                        <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 text-sm font-bold">A</span>
+                        <span>Gerbang AND</span>
+                    </li>
+                    <li class="flex items-center gap-4 p-4 rounded-xl border border-gray-100">
+                        <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 text-sm font-bold">B</span>
+                        <span>Gerbang OR</span>
+                    </li>
+                    <li class="flex items-center gap-4 p-4 rounded-xl border border-gray-100">
+                        <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 text-sm font-bold">C</span>
+                        <span>Gerbang NOT</span>
+                    </li>
+                    <li class="flex items-center gap-4 p-4 rounded-xl border border-brand-200 bg-brand-50/30">
+                        <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-brand-500 text-white text-sm font-bold">D</span>
+                        <span class="font-medium text-brand-700">Gerbang XOR</span>
+                    </li>
+                </ul>
+                <div class="p-6 bg-accent-50 rounded-2xl border border-accent-100">
+                    <div class="mb-2"><strong class="text-accent-600">Kunci Jawaban:</strong> <span class="font-bold text-neutral-900">D</span></div>
+                    <p class="text-sm text-neutral-800 leading-relaxed"><strong class="text-accent-600">Penjelasan:</strong> Gerbang XOR (Exclusive OR) menghasilkan output 1 jika inputnya berbeda, dan menghasilkan 0 jika inputnya sama.</p>
+                </div>
+            </article>
+
+            <!-- Question 5 -->
+            <article class="bg-white rounded-2xl p-6 md:p-8 shadow-premium border border-gray-100 transition-all hover:shadow-hover" id="q5">
+                <div class="flex justify-between items-start mb-6">
+                    <span class="inline-flex items-center justify-center px-3 py-1 rounded-full bg-brand-50 text-brand-600 text-xs font-bold uppercase tracking-wider">Pertanyaan 5</span>
+                    <button onclick="copyQuestion('q5')" class="text-gray-400 hover:text-brand-500 transition-colors p-2 rounded-lg hover:bg-gray-50">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                        </svg>
+                    </button>
+                </div>
+                <h3 class="font-display text-xl md:text-2xl font-bold text-neutral-900 mb-6">Berapakah hasil dari operasi logika 1 OR 0?</h3>
+                <ul class="space-y-3 mb-8">
+                    <li class="flex items-center gap-4 p-4 rounded-xl border border-gray-100">
+                        <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 text-sm font-bold">A</span>
+                        <span>0</span>
+                    </li>
+                    <li class="flex items-center gap-4 p-4 rounded-xl border border-brand-200 bg-brand-50/30">
+                        <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-brand-500 text-white text-sm font-bold">B</span>
+                        <span class="font-medium text-brand-700">1</span>
+                    </li>
+                    <li class="flex items-center gap-4 p-4 rounded-xl border border-gray-100">
+                        <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 text-sm font-bold">C</span>
+                        <span>10</span>
+                    </li>
+                    <li class="flex items-center gap-4 p-4 rounded-xl border border-gray-100">
+                        <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 text-sm font-bold">D</span>
+                        <span>Tidak terdefinisi</span>
+                    </li>
+                </ul>
+                <div class="p-6 bg-accent-50 rounded-2xl border border-accent-100">
+                    <div class="mb-2"><strong class="text-accent-600">Kunci Jawaban:</strong> <span class="font-bold text-neutral-900">B</span></div>
+                    <p class="text-sm text-neutral-800 leading-relaxed"><strong class="text-accent-600">Penjelasan:</strong> Pada gerbang OR, output akan bernilai 1 jika salah satu atau seluruh input bernilai 1.</p>
+                </div>
+            </article>
+
+            <!-- Question 6 -->
+            <article class="bg-white rounded-2xl p-6 md:p-8 shadow-premium border border-gray-100 transition-all hover:shadow-hover" id="q6">
+                <div class="flex justify-between items-start mb-6">
+                    <span class="inline-flex items-center justify-center px-3 py-1 rounded-full bg-brand-50 text-brand-600 text-xs font-bold uppercase tracking-wider">Pertanyaan 6</span>
+                    <button onclick="copyQuestion('q6')" class="text-gray-400 hover:text-brand-500 transition-colors p-2 rounded-lg hover:bg-gray-50">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                        </svg>
+                    </button>
+                </div>
+                <h3 class="font-display text-xl md:text-2xl font-bold text-neutral-900 mb-6">Dalam Aljabar Boolean, Hukum Null menyatakan bahwa A AND 0 (A . 0) akan menghasilkan...</h3>
+                <ul class="space-y-3 mb-8">
+                    <li class="flex items-center gap-4 p-4 rounded-xl border border-gray-100">
+                        <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 text-sm font-bold">A</span>
+                        <span>A</span>
+                    </li>
+                    <li class="flex items-center gap-4 p-4 rounded-xl border border-gray-100">
+                        <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 text-sm font-bold">B</span>
+                        <span>1</span>
+                    </li>
+                    <li class="flex items-center gap-4 p-4 rounded-xl border border-brand-200 bg-brand-50/30">
+                        <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-brand-500 text-white text-sm font-bold">C</span>
+                        <span class="font-medium text-brand-700">0</span>
+                    </li>
+                    <li class="flex items-center gap-4 p-4 rounded-xl border border-gray-100">
+                        <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 text-sm font-bold">D</span>
+                        <span>Negasi A</span>
+                    </li>
+                </ul>
+                <div class="p-6 bg-accent-50 rounded-2xl border border-accent-100">
+                    <div class="mb-2"><strong class="text-accent-600">Kunci Jawaban:</strong> <span class="font-bold text-neutral-900">C</span></div>
+                    <p class="text-sm text-neutral-800 leading-relaxed"><strong class="text-accent-600">Penjelasan:</strong> Hukum Null menyatakan bahwa apapun nilai A, jika dikalikan (AND) dengan 0, maka hasilnya akan selalu 0.</p>
+                </div>
+            </article>
+
+            <!-- Question 7 -->
+            <article class="bg-white rounded-2xl p-6 md:p-8 shadow-premium border border-gray-100 transition-all hover:shadow-hover" id="q7">
+                <div class="flex justify-between items-start mb-6">
+                    <span class="inline-flex items-center justify-center px-3 py-1 rounded-full bg-brand-50 text-brand-600 text-xs font-bold uppercase tracking-wider">Pertanyaan 7</span>
+                    <button onclick="copyQuestion('q7')" class="text-gray-400 hover:text-brand-500 transition-colors p-2 rounded-lg hover:bg-gray-50">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                        </svg>
+                    </button>
+                </div>
+                <h3 class="font-display text-xl md:text-2xl font-bold text-neutral-900 mb-6">Simbol operator logika yang digunakan untuk mewakili gerbang OR dalam bahasa pemrograman seperti JavaScript adalah...</h3>
+                <ul class="space-y-3 mb-8">
+                    <li class="flex items-center gap-4 p-4 rounded-xl border border-gray-100">
+                        <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 text-sm font-bold">A</span>
+                        <span>&&</span>
+                    </li>
+                    <li class="flex items-center gap-4 p-4 rounded-xl border border-gray-100">
+                        <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 text-sm font-bold">B</span>
+                        <span>!!</span>
+                    </li>
+                    <li class="flex items-center gap-4 p-4 rounded-xl border border-brand-200 bg-brand-50/30">
+                        <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-brand-500 text-white text-sm font-bold">C</span>
+                        <span class="font-medium text-brand-700">||</span>
+                    </li>
+                    <li class="flex items-center gap-4 p-4 rounded-xl border border-gray-100">
+                        <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 text-sm font-bold">D</span>
+                        <span>!=</span>
+                    </li>
+                </ul>
+                <div class="p-6 bg-accent-50 rounded-2xl border border-accent-100">
+                    <div class="mb-2"><strong class="text-accent-600">Kunci Jawaban:</strong> <span class="font-bold text-neutral-900">C</span></div>
+                    <p class="text-sm text-neutral-800 leading-relaxed"><strong class="text-accent-600">Penjelasan:</strong> Operator || digunakan untuk operasi logika OR, sedangkan && digunakan untuk AND dan ! untuk NOT.</p>
+                </div>
+            </article>
+
+            <!-- Question 8 -->
+            <article class="bg-white rounded-2xl p-6 md:p-8 shadow-premium border border-gray-100 transition-all hover:shadow-hover" id="q8">
+                <div class="flex justify-between items-start mb-6">
+                    <span class="inline-flex items-center justify-center px-3 py-1 rounded-full bg-brand-50 text-brand-600 text-xs font-bold uppercase tracking-wider">Pertanyaan 8</span>
+                    <button onclick="copyQuestion('q8')" class="text-gray-400 hover:text-brand-500 transition-colors p-2 rounded-lg hover:bg-gray-50">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                        </svg>
+                    </button>
+                </div>
+                <h3 class="font-display text-xl md:text-2xl font-bold text-neutral-900 mb-6">Manakah dari pernyataan Aljabar Boolean berikut yang benar menurut Hukum Komplemen?</h3>
+                <ul class="space-y-3 mb-8">
+                    <li class="flex items-center gap-4 p-4 rounded-xl border border-gray-100">
+                        <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 text-sm font-bold">A</span>
+                        <span>A + 0 = A</span>
+                    </li>
+                    <li class="flex items-center gap-4 p-4 rounded-xl border border-gray-100">
+                        <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 text-sm font-bold">B</span>
+                        <span>A + 1 = 1</span>
+                    </li>
+                    <li class="flex items-center gap-4 p-4 rounded-xl border border-gray-100">
+                        <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 text-sm font-bold">C</span>
+                        <span>A . 1 = A</span>
+                    </li>
+                    <li class="flex items-center gap-4 p-4 rounded-xl border border-brand-200 bg-brand-50/30">
+                        <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-brand-500 text-white text-sm font-bold">D</span>
+                        <span class="font-medium text-brand-700">A + (NOT A) = 1</span>
+                    </li>
+                </ul>
+                <div class="p-6 bg-accent-50 rounded-2xl border border-accent-100">
+                    <div class="mb-2"><strong class="text-accent-600">Kunci Jawaban:</strong> <span class="font-bold text-neutral-900">D</span></div>
+                    <p class="text-sm text-neutral-800 leading-relaxed"><strong class="text-accent-600">Penjelasan:</strong> Hukum Komplemen menyatakan bahwa penjumlahan (OR) antara variabel dengan negasinya sendiri akan selalu menghasilkan 1.</p>
+                </div>
+            </article>
+
+            <!-- Question 9 -->
+            <article class="bg-white rounded-2xl p-6 md:p-8 shadow-premium border border-gray-100 transition-all hover:shadow-hover" id="q9">
+                <div class="flex justify-between items-start mb-6">
+                    <span class="inline-flex items-center justify-center px-3 py-1 rounded-full bg-brand-50 text-brand-600 text-xs font-bold uppercase tracking-wider">Pertanyaan 9</span>
+                    <button onclick="copyQuestion('q9')" class="text-gray-400 hover:text-brand-500 transition-colors p-2 rounded-lg hover:bg-gray-50">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                        </svg>
+                    </button>
+                </div>
+                <h3 class="font-display text-xl md:text-2xl font-bold text-neutral-900 mb-6">Jika sebuah sistem memiliki logika (isLoggedIn && isAdmin), maka akses akan diberikan jika...</h3>
+                <ul class="space-y-3 mb-8">
+                    <li class="flex items-center gap-4 p-4 rounded-xl border border-gray-100">
+                        <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 text-sm font-bold">A</span>
+                        <span>Pengguna sudah login saja</span>
+                    </li>
+                    <li class="flex items-center gap-4 p-4 rounded-xl border border-gray-100">
+                        <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 text-sm font-bold">B</span>
+                        <span>Pengguna adalah admin saja</span>
+                    </li>
+                    <li class="flex items-center gap-4 p-4 rounded-xl border border-brand-200 bg-brand-50/30">
+                        <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-brand-500 text-white text-sm font-bold">C</span>
+                        <span class="font-medium text-brand-700">Pengguna sudah login dan pengguna adalah admin</span>
+                    </li>
+                    <li class="flex items-center gap-4 p-4 rounded-xl border border-gray-100">
+                        <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 text-sm font-bold">D</span>
+                        <span>Pengguna tidak login tetapi seorang admin</span>
+                    </li>
+                </ul>
+                <div class="p-6 bg-accent-50 rounded-2xl border border-accent-100">
+                    <div class="mb-2"><strong class="text-accent-600">Kunci Jawaban:</strong> <span class="font-bold text-neutral-900">C</span></div>
+                    <p class="text-sm text-neutral-800 leading-relaxed"><strong class="text-accent-600">Penjelasan:</strong> Operator && (AND) mengharuskan kedua kondisi di sisi kiri dan kanan bernilai benar agar seluruh pernyataan menjadi benar.</p>
+                </div>
+            </article>
+
+            <!-- Question 10 -->
+            <article class="bg-white rounded-2xl p-6 md:p-8 shadow-premium border border-gray-100 transition-all hover:shadow-hover" id="q10">
+                <div class="flex justify-between items-start mb-6">
+                    <span class="inline-flex items-center justify-center px-3 py-1 rounded-full bg-brand-50 text-brand-600 text-xs font-bold uppercase tracking-wider">Pertanyaan 10</span>
+                    <button onclick="copyQuestion('q10')" class="text-gray-400 hover:text-brand-500 transition-colors p-2 rounded-lg hover:bg-gray-50">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                        </svg>
+                    </button>
+                </div>
+                <h3 class="font-display text-xl md:text-2xl font-bold text-neutral-900 mb-6">Sistem bilangan yang menjadi dasar bahasa ibu komputer karena hanya memiliki dua kondisi (ada arus atau tidak ada arus) adalah...</h3>
+                <ul class="space-y-3 mb-8">
+                    <li class="flex items-center gap-4 p-4 rounded-xl border border-gray-100">
+                        <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 text-sm font-bold">A</span>
+                        <span>Desimal</span>
+                    </li>
+                    <li class="flex items-center gap-4 p-4 rounded-xl border border-gray-100">
+                        <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 text-sm font-bold">B</span>
+                        <span>Oktal</span>
+                    </li>
+                    <li class="flex items-center gap-4 p-4 rounded-xl border border-brand-200 bg-brand-50/30">
+                        <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-brand-500 text-white text-sm font-bold">C</span>
+                        <span class="font-medium text-brand-700">Biner</span>
+                    </li>
+                    <li class="flex items-center gap-4 p-4 rounded-xl border border-gray-100">
+                        <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 text-sm font-bold">D</span>
+                        <span>Heksadesimal</span>
+                    </li>
+                </ul>
+                <div class="p-6 bg-accent-50 rounded-2xl border border-accent-100">
+                    <div class="mb-2"><strong class="text-accent-600">Kunci Jawaban:</strong> <span class="font-bold text-neutral-900">C</span></div>
+                    <p class="text-sm text-neutral-800 leading-relaxed"><strong class="text-accent-600">Penjelasan:</strong> Sistem biner (basis 2) menggunakan angka 0 dan 1 untuk merepresentasikan kondisi fisik sirkuit elektrik pada komputer.</p>
+                </div>
+            </article>
+
+        </div>
+
+        <!-- Reference Summary Box -->
+        <section class="mt-20 p-8 md:p-12 bg-white rounded-3xl shadow-premium border border-gray-100">
+            <h2 class="font-display text-2xl font-extrabold text-neutral-900 mb-6 flex items-center gap-3">
+                <span class="w-10 h-10 rounded-xl bg-accent-500 flex items-center justify-center text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
+                </span>
+                Materi Pendukung
+            </h2>
+            <div class="prose prose-blue max-w-none text-neutral-800">
+                <p class="mb-4">Logika komputer adalah cara komputer "berpikir" menggunakan pernyataan <strong>Benar (1)</strong> dan <strong>Salah (0)</strong>.</p>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="p-4 bg-gray-50 rounded-xl border border-gray-100">
+                        <h4 class="font-bold text-brand-700 mb-2">Gerbang Dasar</h4>
+                        <ul class="text-sm space-y-1">
+                            <li>• <strong>NOT</strong>: Membalikkan nilai.</li>
+                            <li>• <strong>AND</strong>: 1 jika semua input 1.</li>
+                            <li>• <strong>OR</strong>: 1 jika salah satu input 1.</li>
+                            <li>• <strong>XOR</strong>: 1 jika input berbeda.</li>
+                        </ul>
+                    </div>
+                    <div class="p-4 bg-gray-50 rounded-xl border border-gray-100">
+                        <h4 class="font-bold text-brand-700 mb-2">Hukum Boolean</h4>
+                        <ul class="text-sm space-y-1">
+                            <li>• <strong>Identitas</strong>: A . 1 = A</li>
+                            <li>• <strong>Null</strong>: A . 0 = 0</li>
+                            <li>• <strong>Komplemen</strong>: A + NOT A = 1</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 hidden z-[100]">
+        <div class="bg-neutral-900 text-white px-6 py-3 rounded-full shadow-2xl flex items-center gap-3 copy-success">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-accent-500" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+            </svg>
+            <span class="font-medium text-sm">Berhasil disalin ke papan klip!</span>
+        </div>
+    </div>
+
+    <script>
+        function copyQuestion(id) {
+            const el = document.getElementById(id);
+            const questionText = el.querySelector('h3').innerText;
+            const options = Array.from(el.querySelectorAll('ul li')).map(li => li.innerText).join('\n');
+            const answer = el.querySelector('.mb-2').innerText;
+            
+            const fullText = `${questionText}\n\n${options}\n\n${answer}`;
+            
+            navigator.clipboard.writeText(fullText).then(() => {
+                showToast();
+            });
+        }
+
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 2000);
+        }
+
+        // Add subtle animation when cards come into view
+        const observerOptions = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('opacity-100', 'translate-y-0');
+                    entry.target.classList.remove('opacity-0', 'translate-y-10');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('article').forEach(card => {
+            card.classList.add('transition-all', 'duration-700', 'opacity-0', 'translate-y-10');
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>
